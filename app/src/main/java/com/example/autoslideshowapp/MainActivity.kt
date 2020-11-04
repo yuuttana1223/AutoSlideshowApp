@@ -11,6 +11,7 @@ import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -44,6 +45,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            PERMISSIONS_REQUEST_CODE ->
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setFirstImage()
+                } else {
+                    Toast.makeText(applicationContext, "permission denied", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
     override fun onClick(v: View) {
         when (v.id) {
             R.id.next_button
@@ -70,20 +86,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 mTimer!!.cancel()
                 mTimer = null
             }
-
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            PERMISSIONS_REQUEST_CODE ->
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    setFirstImage()
-                }
         }
     }
 
