@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var mTimer: Timer? = null
     private lateinit var cursor: Cursor
     private var mHandler = Handler()
+    private var flag: Boolean = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,36 +56,39 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setFirstImage()
                 } else {
+                    flag = false
                     Toast.makeText(applicationContext, "permission denied", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
     override fun onClick(v: View) {
-        when (v.id) {
-            R.id.next_button
-            -> if (mTimer == null) {
-                setNextImage()
-            }
-            R.id.back_button
-            -> if (mTimer == null) {
-                setBackImage()
-            }
-            R.id.start_stop_button
-            -> if (mTimer == null) {
-                start_stop_button.text = "停止"
-                mTimer = Timer()
-                mTimer!!.schedule(object : TimerTask() {
-                    override fun run() {
-                        mHandler.post {
-                            setNextImage()
+        if (flag) {
+            when (v.id) {
+                R.id.next_button
+                -> if (mTimer == null) {
+                    setNextImage()
+                }
+                R.id.back_button
+                -> if (mTimer == null) {
+                    setBackImage()
+                }
+                R.id.start_stop_button
+                -> if (mTimer == null) {
+                    start_stop_button.text = "停止"
+                    mTimer = Timer()
+                    mTimer!!.schedule(object : TimerTask() {
+                        override fun run() {
+                            mHandler.post {
+                                setNextImage()
+                            }
                         }
-                    }
-                }, 2000, 2000)
-            } else if (mTimer != null) {
-                start_stop_button.text = "再生"
-                mTimer!!.cancel()
-                mTimer = null
+                    }, 2000, 2000)
+                } else if (mTimer != null) {
+                    start_stop_button.text = "再生"
+                    mTimer!!.cancel()
+                    mTimer = null
+                }
             }
         }
     }
